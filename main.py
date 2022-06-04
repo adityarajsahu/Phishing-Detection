@@ -34,6 +34,16 @@ ran_for_accuracy = random_forest.score(X_val, Y_val)
 print("Random Forest Accuracy: {:.2f} %".format(ran_for_accuracy * 100))
 pickle.dump(random_forest, open('Models/random_forest_model.sav', 'wb'))
 
+Test_df = pd.read_csv('Dataset/Phising_Testing_Dataset.csv')
+key_column = Test_df['key']
+X = Test_df.drop(columns=['key'])
+predictions = random_forest.predict(X)
+predictions = predictions.reshape(predictions.shape[0])
+
+submission = pd.DataFrame({'key': key_column, 'Result': predictions})
+submission['Result'] = submission['Result'].astype(int)
+submission.to_csv('submission_random_forest.csv', index=False)
+
 svm_clf = SVC()
 svm_clf.fit(X_train, Y_train)
 svm_accuracy = svm_clf.score(X_val, Y_val)
